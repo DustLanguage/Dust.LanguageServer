@@ -1,6 +1,10 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dust.LanguageServer", "Dust.LanguageServer\Dust.LanguageServer.csproj", "{EEDB0BDD-62F2-4078-A946-5581DC5A0415}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dust.LanguageServer", "Dust.LanguageServer\Dust.LanguageServer.csproj", "{E0B74FD4-021D-40E0-8F32-B7CB90F98294}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LanguageServer", "LanguageServerProtocol\LanguageServer\LanguageServer.csproj", "{F49263B5-4C8D-422C-BC36-34D9679EFAA9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dust", "..\Dust\Dust\Dust.csproj", "{61A6D730-D2C7-4B7E-8AD9-7CAA5698641F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -8,9 +12,17 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{EEDB0BDD-62F2-4078-A946-5581DC5A0415}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EEDB0BDD-62F2-4078-A946-5581DC5A0415}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EEDB0BDD-62F2-4078-A946-5581DC5A0415}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EEDB0BDD-62F2-4078-A946-5581DC5A0415}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0B74FD4-021D-40E0-8F32-B7CB90F98294}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0B74FD4-021D-40E0-8F32-B7CB90F98294}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0B74FD4-021D-40E0-8F32-B7CB90F98294}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0B74FD4-021D-40E0-8F32-B7CB90F98294}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F49263B5-4C8D-422C-BC36-34D9679EFAA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F49263B5-4C8D-422C-BC36-34D9679EFAA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F49263B5-4C8D-422C-BC36-34D9679EFAA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F49263B5-4C8D-422C-BC36-34D9679EFAA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61A6D730-D2C7-4B7E-8AD9-7CAA5698641F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61A6D730-D2C7-4B7E-8AD9-7CAA5698641F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61A6D730-D2C7-4B7E-8AD9-7CAA5698641F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61A6D730-D2C7-4B7E-8AD9-7CAA5698641F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

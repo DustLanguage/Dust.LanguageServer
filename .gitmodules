@@ -1,0 +1,3 @@
+[submodule "LanguageServerProtocol"]
+	path = LanguageServerProtocol
+	url = https://github.com/DustLanguage/LanguageServerProtocol.git
