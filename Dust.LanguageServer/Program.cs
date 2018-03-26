@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Text;
-using LanguageServer.Client;
-using LanguageServer.Parameters.Window;
-using SampleServer;
+using LanguageServer;
 
 namespace Dust.LanguageServer
 {

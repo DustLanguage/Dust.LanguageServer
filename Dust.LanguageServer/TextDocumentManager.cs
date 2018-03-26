@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using LanguageServer.Parameters.TextDocument;
-using SampleServer;
 
 namespace Dust.LanguageServer
 {

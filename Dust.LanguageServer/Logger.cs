@@ -2,7 +2,7 @@
 using LanguageServer.Client;
 using LanguageServer.Parameters.Window;
 
-namespace SampleServer
+namespace LanguageServer
 {
   public class Logger
   {
@@ -15,10 +15,25 @@ namespace SampleServer
       proxy = connection == null ? null : new Proxy(connection);
     }
 
-    public void Error(string message) => Send(MessageType.Error, message);
-    public void Warn(string message) => Send(MessageType.Warning, message);
-    public void Info(string message) => Send(MessageType.Info, message);
-    public void Log(string message) => Send(MessageType.Log, message);
+    public void Error(object message)
+    {
+      Send(MessageType.Error, message.ToString());
+    }
+
+    public void Warn(object message)
+    {
+      Send(MessageType.Warning, message.ToString());
+    }
+
+    public void Info(object message)
+    {
+      Send(MessageType.Info, message.ToString());
+    }
+
+    public void Log(object message)
+    {
+      Send(MessageType.Log, message.ToString());
+    }
 
     private void Send(MessageType type, string message)
     {
