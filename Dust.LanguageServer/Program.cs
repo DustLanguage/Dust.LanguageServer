@@ -15,13 +15,8 @@ namespace Dust.LanguageServer
       App app = new App(Console.OpenStandardInput(), Console.OpenStandardOutput());
 
       Logger.Instance.Attach(app);
-
-      new Proxy(app).Window.ShowMessage(new ShowMessageParams
-      {
-        Type = MessageType.Warning,
-        Message = "Test2"
-      });
-
+      Logger.Instance.Info("Started.");
+      
       try
       {
         app.Listen().Wait();

@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using LanguageServer;
 using LanguageServer.Json;
 using LanguageServer.Parameters;
 using LanguageServer.Parameters.General;
 using LanguageServer.Parameters.TextDocument;
-using SampleServer;
 
 namespace Dust.LanguageServer
 {
@@ -15,7 +12,8 @@ namespace Dust.LanguageServer
   {
     private Uri workspaceRoot;
     private readonly TextDocumentManager documents = new TextDocumentManager();
-
+    public CompletionProvider completionProvider = new CompletionProvider();
+    
     public App(Stream input, Stream output)
       : base(input, output)
     {
@@ -33,9 +31,10 @@ namespace Dust.LanguageServer
           TextDocumentSync = TextDocumentSyncKind.Full,
           CompletionProvider = new CompletionOptions
           {
-            TriggerCharacters = new []
+            TriggerCharacters = new[]
             {
-              "."
+              ".",
+              " "
             },
             ResolveProvider = false
           }
@@ -57,95 +56,13 @@ namespace Dust.LanguageServer
     {
       documents.Remove(@params.TextDocument.Uri);
     }
-
+    
     protected override Result<ArrayOrObject<CompletionItem, CompletionList>, ResponseError> Completion(TextDocumentPositionParams @params)
     {
-      Dictionary<string[], CompletionList> possibleCompletions = new Dictionary<string[], CompletionList>
-      {
-        {
-          new[] {"let"},
-          new CompletionList
-          {
-            Items = new[]
-            {
-              new CompletionItem
-              {
-                Label = "mut",
-                Kind = CompletionItemKind.Keyword
-              },
-              new CompletionItem
-              {
-                Label = "fn",
-                Kind = CompletionItemKind.Keyword
-              },
-            }
-          }
-        },
-        {
-          new[] {"fn", "mut"},
-          new CompletionList
-          {
-            Items = null
-          }
-        },
-        {
-          new[] {"public", "internal", "private"},
-          new CompletionList
-          {
-            Items = new[]
-            {
-              new CompletionItem
-              {
-                Label = "let",
-                Kind = CompletionItemKind.Keyword
-              },
-            }
-          }
-        }
-      };
-
-      TextDocumentItem document = documents.Get(@params.TextDocument.Uri);
-
-      string text = document.Text.Split(Environment.NewLine)[@params.Position.Line].Substring(0, (int) @params.Position.Character).Trim();
-      
-      string word = text.Split(" ").Last();
-
-      foreach (KeyValuePair<string[], CompletionList> completion in possibleCompletions)
-      {
-        foreach (string entry in completion.Key)
-        {
-          if (word == entry)
-          {
-            return Result<ArrayOrObject<CompletionItem, CompletionList>, ResponseError>.Success(completion.Value);
-          }
-        }
-      }
-
       return Result<ArrayOrObject<CompletionItem, CompletionList>, ResponseError>.Success(new CompletionList
       {
-        Items = new[]
-        {
-          new CompletionItem
-          {
-            Label = "let",
-            Kind = CompletionItemKind.Keyword
-          },
-          new CompletionItem
-          {
-            Label = "public",
-            Kind = CompletionItemKind.Keyword
-          },
-          new CompletionItem
-          {
-            Label = "internal",
-            Kind = CompletionItemKind.Keyword
-          },
-          new CompletionItem
-          {
-            Label = "private",
-            Kind = CompletionItemKind.Keyword
-          }
-        }
+        IsIncomplete = true,
+        Items = completionProvider.GetCompletions(documents.Get(@params.TextDocument.Uri), @params.Position).ToArray()
       });
     }
 

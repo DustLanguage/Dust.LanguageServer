@@ -4,9 +4,9 @@ namespace Dust.LanguageServer
 {
   public class TextDocumentChangedEventArgs
   {
-    public TextDocumentItem Document { get; }
+    public TextDocument Document { get; }
     
-    public TextDocumentChangedEventArgs(TextDocumentItem document)
+    public TextDocumentChangedEventArgs(TextDocument document)
     {
       Document = document;
     }

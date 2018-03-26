@@ -7,10 +7,10 @@ namespace Dust.LanguageServer
 {
   public class TextDocumentManager
   {
-    private List<TextDocumentItem> Documents { get; } = new List<TextDocumentItem>();
+    private List<TextDocument> Documents { get; } = new List<TextDocument>();
     public event Action<TextDocumentChangedEventArgs> OnChanged;
 
-    public void Add(TextDocumentItem document)
+    public void Add(TextDocument document)
     {
       if (Documents.Contains(document) == false)
       {
@@ -19,14 +19,14 @@ namespace Dust.LanguageServer
       }
     }
 
-    public TextDocumentItem Get(Uri uri)
+    public TextDocument Get(Uri uri)
     {
       return Documents.Find(item => item.Uri == uri);
     }
 
     public void Change(Uri uri, long version, TextDocumentContentChangeEvent[] changeEvents)
     {
-      TextDocumentItem document = Documents.Find(item => item.Uri == uri);
+      TextDocument document = Documents.Find(item => item.Uri == uri);
 
       if (document == null)
       {
@@ -47,7 +47,7 @@ namespace Dust.LanguageServer
       OnChanged?.Invoke(new TextDocumentChangedEventArgs(document));
     }
 
-    private void Apply(TextDocumentItem document, TextDocumentContentChangeEvent changeEvent)
+    private void Apply(TextDocument document, TextDocumentContentChangeEvent changeEvent)
     {
       if (changeEvent.Range != null)
       {
@@ -103,7 +103,7 @@ namespace Dust.LanguageServer
 
     public void Remove(Uri uri)
     {
-      TextDocumentItem document = Documents.Find(item => item.Uri == uri);
+      TextDocument document = Documents.Find(item => item.Uri == uri);
 
       if (document != null)
       {
