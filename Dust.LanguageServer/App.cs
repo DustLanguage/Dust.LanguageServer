@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Dust.LanguageServer.Completion;
+using Dust.LanguageServer.Signature;
 using LanguageServer;
 using LanguageServer.Json;
 using LanguageServer.Parameters;
@@ -14,6 +15,8 @@ namespace Dust.LanguageServer
     private Uri workspaceRoot;
     private Project project;
     private CompletionProvider completionProvider;
+    private SignatureHelpProvider signatureHelpProvider;
+
     public App(Stream input, Stream output)
       : base(input, output)
     {
@@ -24,6 +27,7 @@ namespace Dust.LanguageServer
       workspaceRoot = @params.RootUri;
       project = new Project(workspaceRoot);
       completionProvider = new CompletionProvider(project);
+      signatureHelpProvider = new SignatureHelpProvider(project);
       
       project.Documents.OnChanged += DocumentChanged;
       
@@ -40,6 +44,14 @@ namespace Dust.LanguageServer
               " "
             },
             ResolveProvider = false
+          },
+          SignatureHelpProvider = new SignatureHelpOptions
+          {
+            TriggerCharacters = new[]
+            {
+              "(",
+              ","
+            }
           }
         }
       });
@@ -67,6 +79,11 @@ namespace Dust.LanguageServer
         IsIncomplete = true,
         Items = completionProvider.GetCompletions(project.Documents.Get(@params.TextDocument.Uri), @params.Position).ToArray()
       });
+    }
+
+    protected override Result<SignatureHelp, ResponseError> SignatureHelp(TextDocumentPositionParams @params)
+    {
+      return Result<SignatureHelp, ResponseError>.Success(signatureHelpProvider.GetSignatureHelp(project.Documents.Get(@params.TextDocument.Uri), @params.Position));
     }
 
     protected override Result<CompletionItem, ResponseError> ResolveCompletionItem(CompletionItem @params)
