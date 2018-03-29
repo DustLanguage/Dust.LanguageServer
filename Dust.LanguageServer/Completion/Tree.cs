@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Dust.LanguageServer
+namespace Dust.LanguageServer.Completion
 {
   public class Tree<T>
   {

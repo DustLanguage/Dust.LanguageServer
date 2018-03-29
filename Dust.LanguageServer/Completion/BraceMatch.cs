@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Dust.LanguageServer
+namespace Dust.LanguageServer.Completion
 {
   public class BraceMatch : IEquatable<BraceMatch>
   {
@@ -17,6 +17,7 @@ namespace Dust.LanguageServer
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
+      
       return Start == other.Start && End == other.End;
     }
 
@@ -24,7 +25,8 @@ namespace Dust.LanguageServer
     {
       if (ReferenceEquals(null, obj)) return false;
       if (ReferenceEquals(this, obj)) return true;
-      return obj.GetType() == this.GetType() && Equals((BraceMatch) obj);
+      
+      return obj.GetType() == GetType() && Equals((BraceMatch) obj);
     }
 
     public override int GetHashCode()

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Dust.LanguageServer.Completion;
 using LanguageServer;
 using LanguageServer.Json;
 using LanguageServer.Parameters;
@@ -11,19 +12,21 @@ namespace Dust.LanguageServer
   public class App : ServiceConnection
   {
     private Uri workspaceRoot;
-    private readonly TextDocumentManager documents = new TextDocumentManager();
-    public CompletionProvider completionProvider = new CompletionProvider();
-    
+    private Project project;
+    private CompletionProvider completionProvider;
     public App(Stream input, Stream output)
       : base(input, output)
     {
-      documents.OnChanged += DocumentChanged;
     }
 
     protected override Result<InitializeResult, ResponseError<InitializeErrorData>> Initialize(InitializeParams @params)
     {
       workspaceRoot = @params.RootUri;
-
+      project = new Project(workspaceRoot);
+      completionProvider = new CompletionProvider(project);
+      
+      project.Documents.OnChanged += DocumentChanged;
+      
       return Result<InitializeResult, ResponseError<InitializeErrorData>>.Success(new InitializeResult
       {
         Capabilities = new ServerCapabilities
@@ -44,25 +47,25 @@ namespace Dust.LanguageServer
 
     protected override void DidOpenTextDocument(DidOpenTextDocumentParams @params)
     {
-      documents.Add(@params.TextDocument);
+      project.Documents.Add(@params.TextDocument);
     }
 
     protected override void DidChangeTextDocument(DidChangeTextDocumentParams @params)
     {
-      documents.Change(@params.TextDocument.Uri, @params.TextDocument.Version, @params.ContentChanges);
+      project.Documents.Change(@params.TextDocument.Uri, @params.TextDocument.Version, @params.ContentChanges);
     }
 
     protected override void DidCloseTextDocument(DidCloseTextDocumentParams @params)
     {
-      documents.Remove(@params.TextDocument.Uri);
+      project.Documents.Remove(@params.TextDocument.Uri);
     }
-    
+
     protected override Result<ArrayOrObject<CompletionItem, CompletionList>, ResponseError> Completion(TextDocumentPositionParams @params)
     {
       return Result<ArrayOrObject<CompletionItem, CompletionList>, ResponseError>.Success(new CompletionList
       {
         IsIncomplete = true,
-        Items = completionProvider.GetCompletions(documents.Get(@params.TextDocument.Uri), @params.Position).ToArray()
+        Items = completionProvider.GetCompletions(project.Documents.Get(@params.TextDocument.Uri), @params.Position).ToArray()
       });
     }
 

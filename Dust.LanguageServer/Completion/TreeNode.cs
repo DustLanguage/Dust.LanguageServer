@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Dust.LanguageServer.Extensions;
 
-namespace Dust.LanguageServer
+namespace Dust.LanguageServer.Completion
 {
   public class TreeNode<T> : IEquatable<TreeNode<T>>
   {

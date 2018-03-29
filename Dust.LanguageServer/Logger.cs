@@ -2,7 +2,7 @@
 using LanguageServer.Client;
 using LanguageServer.Parameters.Window;
 
-namespace LanguageServer
+namespace Dust.LanguageServer
 {
   public class Logger
   {
