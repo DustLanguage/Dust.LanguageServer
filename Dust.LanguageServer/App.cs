@@ -1,7 +1,8 @@
 ﻿using System;
 using System.IO;
 using Dust.LanguageServer.Completion;
-using Dust.LanguageServer.Signature;
+using Dust.LanguageServer.Hovers;
+using Dust.LanguageServer.Signatures;
 using LanguageServer;
 using LanguageServer.Json;
 using LanguageServer.Parameters;
@@ -16,6 +17,7 @@ namespace Dust.LanguageServer
     private Project project;
     private CompletionProvider completionProvider;
     private SignatureHelpProvider signatureHelpProvider;
+    private HoverProvider hoverProvider;
 
     public App(Stream input, Stream output)
       : base(input, output)
@@ -28,9 +30,10 @@ namespace Dust.LanguageServer
       project = new Project(workspaceRoot);
       completionProvider = new CompletionProvider(project);
       signatureHelpProvider = new SignatureHelpProvider(project);
-      
+      hoverProvider = new HoverProvider(project);
+
       project.Documents.OnChanged += DocumentChanged;
-      
+
       return Result<InitializeResult, ResponseError<InitializeErrorData>>.Success(new InitializeResult
       {
         Capabilities = new ServerCapabilities
@@ -52,7 +55,8 @@ namespace Dust.LanguageServer
               "(",
               ","
             }
-          }
+          },
+          HoverProvider = true
         }
       });
     }
@@ -86,9 +90,9 @@ namespace Dust.LanguageServer
       return Result<SignatureHelp, ResponseError>.Success(signatureHelpProvider.GetSignatureHelp(project.Documents.Get(@params.TextDocument.Uri), @params.Position));
     }
 
-    protected override Result<CompletionItem, ResponseError> ResolveCompletionItem(CompletionItem @params)
+    protected override Result<Hover, ResponseError> Hover(TextDocumentPositionParams @params)
     {
-      return Result<CompletionItem, ResponseError>.Success(@params);
+      return Result<Hover, ResponseError>.Success(hoverProvider.GetHover(project.Documents.Get(@params.TextDocument.Uri), @params.Position));
     }
 
     private void DocumentChanged(TextDocumentChangedEventArgs args)
