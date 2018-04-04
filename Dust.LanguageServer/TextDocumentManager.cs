@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using LanguageServer.Parameters.TextDocument;
 
 namespace Dust.LanguageServer
@@ -8,6 +9,11 @@ namespace Dust.LanguageServer
   {
     private List<TextDocument> Documents { get; } = new List<TextDocument>();
     public event Action<TextDocumentChangedEventArgs> OnChanged;
+
+    public TextDocumentManager()
+    {
+      OnChanged += args => args.Document.Text = Regex.Replace(args.Document.Text, @"\r\n|\n\r|\r/g", "\n");
+    }
 
     public void Add(TextDocument document)
     {
@@ -50,8 +56,8 @@ namespace Dust.LanguageServer
     {
       if (changeEvent.Range != null)
       {
-        int startPos = GetPosition(document.Text, (int) changeEvent.Range.Start.Line, (int) changeEvent.Range.Start.Character);
-        int endPos = GetPosition(document.Text, (int) changeEvent.Range.End.Line, (int) changeEvent.Range.End.Character);
+        int startPos = GetPosition(document.Text, changeEvent.Range.Start.Line, changeEvent.Range.Start.Character);
+        int endPos = GetPosition(document.Text, changeEvent.Range.End.Line, changeEvent.Range.End.Character);
         string newText = document.Text.Substring(0, startPos) + changeEvent.Text + document.Text.Substring(endPos);
 
         document.Text = newText;
