@@ -7,7 +7,7 @@ using Dust.LanguageServer.Extensions;
 using LanguageServer.Parameters;
 using LanguageServer.Parameters.TextDocument;
 
-namespace Dust.LanguageServer.Signature
+namespace Dust.LanguageServer.Signatures
 {
   public class SignatureHelpProvider : Provider
   {
@@ -20,7 +20,7 @@ namespace Dust.LanguageServer.Signature
     {
       string text = document.Text;
       int index = document.GetPosition(position);
-      string[] lines = text.Split(Environment.NewLine);
+      string[] lines = text.Split('\n');
       string line = lines[position.Line];
 
       int startIndex = line.Substring(0, position.Character).LastIndexOf("(", StringComparison.Ordinal);
@@ -32,7 +32,7 @@ namespace Dust.LanguageServer.Signature
         // Remove the current line because it might contain errors.
         lines[position.Line] = "";
 
-        DustContext currentContext = document.GetContextAtPosition(position, project.Compile(string.Join(Environment.NewLine, lines)));
+        DustContext currentContext = document.GetContextAtPosition(position, Project.CompileFile(string.Join('\n', lines)).GlobalContext);
 
         Function function = currentContext.GetFunction(functionName);
 
@@ -69,8 +69,6 @@ namespace Dust.LanguageServer.Signature
             }
           }
         };
-
-        Logger.Instance.Info(functionName);
       }
 
       return new SignatureHelp();
