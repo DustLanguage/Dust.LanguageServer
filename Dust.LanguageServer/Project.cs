@@ -2,6 +2,7 @@
 using Antlr4.Runtime;
 using Dust.Compiler;
 using Dust.Language;
+using Dust.Language.Nodes;
 
 namespace Dust.LanguageServer
 {
@@ -16,7 +17,7 @@ namespace Dust.LanguageServer
       Documents = new TextDocumentManager();
     }
 
-    public DustContext Compile(string text)
+    public static CompileResult<object> CompileFile(string text)
     {
       AntlrInputStream inputStream = new AntlrInputStream(text);
       DustLexer lexer = new DustLexer(inputStream);
@@ -26,9 +27,9 @@ namespace Dust.LanguageServer
       DustVisitor visitor = new DustVisitor(context);
       DustRuntimeCompiler compiler = new DustRuntimeCompiler(context);
 
-      visitor.VisitModule(parser.module());
+      Module module = (Module) visitor.VisitModule(parser.module());
 
-      return compiler.CompilerContext;
+      return compiler.Compile(module);
     }
   }
 }
