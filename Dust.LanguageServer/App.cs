@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using Dust.Language.Errors;
 using Dust.LanguageServer.Completion;
 using Dust.LanguageServer.Hovers;
 using Dust.LanguageServer.Signatures;
@@ -97,6 +99,31 @@ namespace Dust.LanguageServer
 
     private void DocumentChanged(TextDocumentChangedEventArgs args)
     {
+      TextDocument document = project.Documents.Get(args.Document.Uri);
+      
+      List<Diagnostic> diagnostics = new List<Diagnostic>();
+
+      foreach (Error error in Project.CompileFile(document.Text).Errors)
+      {
+        if (error is SyntaxError syntaxError)
+        {
+          diagnostics.Add(new Diagnostic
+          {
+            // TODO: This is just a placeholder.
+            Code = "DS0001",
+            Message = syntaxError.Message,
+            Range = syntaxError.Range,
+            Source = "dust",
+            Severity = DiagnosticSeverity.Error
+          });
+        }
+      }
+
+      Proxy.TextDocument.PublishDiagnostics(new PublishDiagnosticsParams
+      {
+        Diagnostics = diagnostics.ToArray(),
+        Uri = document.Uri
+      });
     }
   }
 }
